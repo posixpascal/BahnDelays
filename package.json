@@ -1,0 +1,36 @@
+{
+  "name": "bahndelay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/es6-promise": "0.0.32",
+    "axios": "^0.15.3",
+    "cheerio": "^0.22.0",
+    "cli-table": "^0.3.1",
+    "csv-parser": "^1.11.0",
+    "dotenv": "^2.0.0",
+    "fs": "0.0.1-security",
+    "moment": "^2.17.1",
+    "node-csv": "^0.1.2",
+    "phantomjs": "^2.1.7",
+    "request": "^2.79.0",
+    "twit": "^2.2.5"
+  },
+  "devDependencies": {
+    "@types/es6-shim": "^0.31.32",
+    "node": "0.0.0",
+    "request": "^2.79.0",
+    "tsc": "^1.20150623.0",
+    "tsd": "^0.6.5",
+    "tsw": "0.0.2",
+    "typescript": "^2.1.4",
+    "typings": "^2.1.0"
+  }
+}
