@@ -7,7 +7,7 @@
  * @implements {TrainStation}
  */
 export class TrainStation  implements TrainStation {
-    static const FIELDS = [
+    static FIELDS = [
                             "country",
                             "city",
                             "id",

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
+    "docs": "typedoc --out docs/ src/ --exclude node_modules/ --name TrainDelay --readme README.md --mode modules --target ES6  --includeDeclarations --ignoreCompilerErrors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -20,12 +21,16 @@
     "twit": "^2.2.5"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.17.31",
     "@types/es6-shim": "^0.31.32",
+    "@types/promise": "^7.1.30",
+    "@types/twit": "^2.2.4",
     "node": "0.0.0",
     "request": "^2.79.0",
     "tsc": "^1.20150623.0",
     "tsd": "^0.6.5",
     "tsw": "0.0.2",
+    "typedoc": "^0.5.1",
     "typescript": "^2.1.4",
     "typings": "^2.1.0"
   }
