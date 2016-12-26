@@ -118,7 +118,7 @@ export class TrainDelay {
         WebAPI.getJourneyInfo(train).then((journal) => {
             this.totalDelay += train.information.delayedTime;
             this.twitter.post('statuses/update', {
-                status: `Der Zug (${train.trainName}) von '${journal[0].station}' nach '${journal[journal.length - 1].station}' hat eine Verspätung von ${train.information.delayedTime}m @db_bahn`
+                status: `Der Zug (${train.trainName}) von '${journal[0].station}' nach '${journal[journal.length - 1].station}' hat eine #Verspätung von ${train.information.delayedTime}m @db_bahn #DBVerspätung`
             });
         });
     }
