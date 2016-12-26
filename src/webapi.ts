@@ -1,6 +1,6 @@
 import { Train } from './train';
 import { load } from 'cheerio';
-import { post, request } from 'request';
+import * as request from 'request';
 import * as moment from 'moment';
 
 /**
@@ -84,7 +84,7 @@ export class WebAPI {
         const currentDate = new Date();
         return new Promise((resolve, reject) => {
             // send request to API
-            post(WebAPI.BASE_URL, {
+            request.post(WebAPI.BASE_URL, {
                 form: {
                     input: station.station,
                     date: `${WebAPI.getDayName()}, ${moment().format(WebAPI.BAHN_DATE_FORMAT)}`,
