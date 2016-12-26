@@ -4,6 +4,7 @@ export class Train {
     public to : string;
     public trainName : string;
     public type : string;
+    public journeyURL : string;
     public information? : any;
     constructor(payload : JSON){
         [

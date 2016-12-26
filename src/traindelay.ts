@@ -1,23 +1,57 @@
 import * as Twit from 'twit';
-import * as Table from 'cli-table';
 import * as request from 'request';
 import * as moment from 'moment';
-import { OpenREST } from './api';
 import { Stations } from './trainstations';
 import { WebAPI } from './webapi';
-import { DataSet } from './dataset';
-import { Stations } from './trainstations';
 import { Utils } from './utils';
 import { Train } from './train';
 import { load } from 'cheerio'
 
 
 
+/**
+ * The core application wrapper
+ * 
+ * @export
+ * @class TrainDelay
+ */
 export class TrainDelay {
+    /**
+     * An instance of the Twitter API
+     * 
+     * @type {Twit}
+     * @memberOf TrainDelay
+     */
+
     public twitter: Twit;
+    /**
+     * Queued trains which will be published to twitter in a set interval
+     * @type {Train[]}
+     * @memberOf TrainDelay
+     */
+
     public trainQueue: Train[] = [];
+    /**
+     * The total amount of delay time in minutes
+     * 
+     * @type {number}
+     * @memberOf TrainDelay
+     */
+
     public totalDelay: number;
+    /**
+     * The date where the script was started
+     * 
+     * @type {Date}
+     * @memberOf TrainDelay
+     */
     public startDate: Date;
+
+    /**
+     * Starts the TrainDelay application, connects to twitter and starts to handle the queue.
+     * 
+     * @memberOf TrainDelay
+     */
     start() {
         this.startDate = new Date();
         this.twitter = new Twit({
@@ -29,15 +63,20 @@ export class TrainDelay {
         });
 
 
-
+        this.handleQueue();
         setInterval(() => {
             this.handleQueue();
         }, 60 * 1000);
     }
 
+    /**
+     * Fetch a list of trains from the dataset and check each train's departureboard
+     * 
+     * @returns void
+     * @memberOf TrainDelay
+     */
     collectTrains() {
-        let trains: any = DataSet.getTrains();
-        let stations: any = Stations.getAll().then((stations) => {
+        Stations.getAll().then((stations) => {
             let delay = 0;
             Utils.group(stations, 80).forEach((stationGroup) => {
                 setTimeout((stationGroup) => {
@@ -47,7 +86,7 @@ export class TrainDelay {
                                 if (train.information.delayed) {
                                     this.trainQueue.push(train);
                                 } else {
-                                    return 0;
+                                    return;
                                 }
                             });
                         });
@@ -57,6 +96,13 @@ export class TrainDelay {
         });
     }
 
+    /**
+     * Pops an item from the stack and publishes it to twitter,
+     * if no item is present it tries to fetch new trains from bahn.de
+     * 
+     * @returns void
+     * @memberOf TrainDelay
+     */
     handleQueue() {
         const train = this.trainQueue.shift();
         if (!train) {
@@ -69,34 +115,10 @@ export class TrainDelay {
             this.collectTrains();
             return;
         }
-        this.getTrainJournal(train).then((journal) => {
+        WebAPI.getJourneyInfo(train).then((journal) => {
             this.totalDelay += train.information.delayedTime;
             this.twitter.post('statuses/update', {
                 status: `Der Zug (${train.trainName}) von '${journal[0].station}' nach '${journal[journal.length - 1].station}' hat eine Verspätung von ${train.information.delayedTime}m @db_bahn`
-            });
-            console.log(`Der Zug (${train.trainName}) von '${journal[0].station}' nach '${journal[journal.length - 1].station}' hat eine Verspätung von ${train.information.delayedTime}m @db_bahn`);
-        });
-    }
-
-    getTrainJournal(train): Promise<Array<any>> {
-        const trainJournal = [];
-        return new Promise((resolve, reject) => {
-            request(train.journeyURL, (err, res, body) => {
-                const $ = load(body);
-                const table = $("table.result.stboard.train");
-                const tableRows = table.find("tr")
-                for (let i = 1, len = tableRows.length; i < len; i++) {
-                    const tableRow = tableRows.eq(i);
-                    if (tableRow.hasClass("current")) { continue; }
-
-                    trainJournal.push({
-                        station: tableRow.find(".station").text().trim(),
-                        arrival: tableRow.find(".arrival").text().trim(),
-                        departure: tableRow.find(".departure").text().trim(),
-                        platform: tableRow.find(".platform").text().trim()
-                    });
-                }
-                resolve(trainJournal);
             });
         });
     }
