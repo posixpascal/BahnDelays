@@ -12,10 +12,12 @@
   "license": "ISC",
   "dependencies": {
     "@types/es6-promise": "0.0.32",
+    "@types/mysql": "0.0.30",
     "cheerio": "^0.22.0",
     "csv-parser": "^1.11.0",
     "dotenv": "^2.0.0",
     "moment": "^2.17.1",
+    "mysql": "^2.12.0",
     "node-csv": "^0.1.2",
     "request": "^2.79.0",
     "twit": "^2.2.5"

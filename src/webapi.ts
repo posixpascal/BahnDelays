@@ -49,6 +49,10 @@ export class WebAPI {
     static getJourneyInfo(train: Train): Promise<Array<any>> { 
        const trainJournal = [];
         return new Promise((resolve, reject) => {
+            if (process.env.DEBUG){
+                console.log("Collecting train: ", train);
+                console.log(train.journeyURL);
+            }
             request(train.journeyURL, (err, res, body) => {
                 const $ = load(body);
                 const table = $("table.result.stboard.train");
@@ -56,7 +60,6 @@ export class WebAPI {
                 for (let i = 1, len = tableRows.length; i < len; i++) {
                     const tableRow = tableRows.eq(i);
                     if (tableRow.hasClass("current")) { continue; }
-
                     trainJournal.push({
                         station: tableRow.find(".station").text().trim(),
                         arrival: tableRow.find(".arrival").text().trim(),

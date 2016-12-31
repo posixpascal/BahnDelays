@@ -5,8 +5,7 @@
         "module": "commonjs",
         "target": "ES6",
         "outDir": "dist",
-        "rootDir": "src",
-        "lib": ["dom", "es2015"]
+        "rootDir": "src"
     },
      "typeRoots" : ["./typings", "./src/typings"]
 }
